@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheckMate | Website Trust & Security Analyzer</title>
+    <meta name="description" content="AI-powered website trust, SSL security, and risk analyzer. Check before you click.">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Background Elements -->
+    <div class="cyber-bg-glow glow-1"></div>
+    <div class="cyber-bg-glow glow-2"></div>
+    <div class="cyber-grid-overlay"></div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="toast hidden">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMessage">Report copied to clipboard!</span>
+    </div>
+
+    <!-- Navigation / Header -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="logo-shield">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span class="logo-pulse"></span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">CheckMate</span>
+                    <span class="brand-badge">PRO AI v2.4</span>
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <div class="status-indicator" title="Threat Intelligence Engine Status">
+                    <span class="dot"></span>
+                    <span class="status-text">AI Shield Active</span>
+                </div>
+                <button id="themeToggle" class="btn-icon" aria-label="Toggle Light/Dark Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- Hero / Scanner Card -->
+        <section class="card landing-card">
+            <div class="hero-header">
+                <div class="shield-hero-icon">
+                    <i class="fa-solid fa-shield-cat"></i>
+                </div>
+                <h1>CheckMate</h1>
+                <p class="tagline">Check Before You Click.</p>
+                <p class="hero-desc">
+                    Instantly analyze any web address for security threats, SSL validity, risk score, and AI safety verdict.
+                </p>
+            </div>
+
+            <!-- Input Box -->
+            <div class="inputBox">
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-globe input-icon"></i>
+                    <input 
+                        type="text" 
+                        id="url" 
+                        placeholder="https://example.com"
+                        aria-label="Website URL input"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <button type="button" class="clear-input-btn hidden" id="clearInputBtn" aria-label="Clear URL Input">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <button onclick="analyzeWebsite()" id="analyzeBtn" class="btn-primary">
+                    <span class="btn-text"><i class="fa-solid fa-wand-magic-sparkles"></i> Analyze</span>
+                    <span class="btn-loader hidden"><i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing...</span>
+                </button>
+            </div>
+
+            <!-- Quick Preset Chips -->
+            <div class="quick-chips">
+                <span class="chip-label">Try analyzing:</span>
+                <button class="chip-btn" data-url="github.com"><i class="fa-brands fa-github"></i> github.com</button>
+                <button class="chip-btn" data-url="https://google.com"><i class="fa-brands fa-google"></i> google.com</button>
+                <button class="chip-btn" data-url="https://wikipedia.org"><i class="fa-solid fa-book-open"></i> wikipedia.org</button>
+                <button class="chip-btn risk-chip" data-url="http://unsecure-test.com"><i class="fa-solid fa-triangle-exclamation"></i> test-http.com</button>
+            </div>
+        </section>
+
+        <!-- Scanning Overlay Bar -->
+        <div id="scanningLoader" class="scanning-bar-container hidden">
+            <div class="scanning-status-text">
+                <i class="fa-solid fa-radar fa-spin"></i>
+                <span id="scanStatusMsg">Inspecting SSL handshake & AI risk database...</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-bar-fill" id="scanProgressFill"></div>
+            </div>
+        </div>
+
+        <!-- Result Dashboard -->
+        <section id="result" class="hidden result-dashboard">
+            
+            <!-- Dashboard Controls Bar -->
+            <div class="dashboard-controls">
+                <div class="dash-title">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Inspection Report Dashboard</span>
+                </div>
+                <div class="dash-buttons">
+                    <button type="button" id="copyBtn" class="btn-secondary" title="Copy full report summary">
+                        <i class="fa-regular fa-copy"></i> Copy Report
+                    </button>
+                    <button type="button" id="resetBtn" class="btn-secondary" title="Run another scan">
+                        <i class="fa-solid fa-rotate-left"></i> New Scan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid Dashboard Cards -->
+            <div class="dashboard-grid">
+
+                <!-- 1. Trust Score Card -->
+                <div class="dash-card score-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-gauge-high card-icon"></i>
+                        <h3>Trust Score</h3>
+                    </div>
+                    
+                    <div class="score-circle-wrapper">
+                        <svg class="score-svg-ring" viewBox="0 0 160 160">
+                            <circle class="ring-bg" cx="80" cy="80" r="70"></circle>
+                            <circle class="ring-fill" id="scoreRingFill" cx="80" cy="80" r="70" stroke-dasharray="440" stroke-dashoffset="440"></circle>
+                        </svg>
+                        <div class="score">
+                            <h2 id="score">85</h2>
+                            <span>/100</span>
+                        </div>
+                    </div>
+
+                    <div class="status-container">
+                        <div id="status" class="status safe">
+                            SAFE
+                        </div>
+                    </div>
+                    <p class="score-footer-note">Calculated using SSL validity, domain age & reputation</p>
+                </div>
+
+                <!-- 2. Security Card -->
+                <div class="dash-card security-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-shield-virus card-icon"></i>
+                        <h3>Security Overview</h3>
+                    </div>
+
+                    <div class="metrics-list">
+                        <div class="metric-row">
+                            <div class="metric-info">
+                                <i class="fa-solid fa-network-wired"></i>
+                                <span>Domain Name</span>
+                            </div>
+                            <p id="domain" class="metric-value font-mono">example.com</p>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-info">
+                                <i class="fa-solid fa-lock"></i>
+                                <span>HTTPS Protocol</span>
+                            </div>
+                            <p id="https" class="metric-value">Enabled ✅</p>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-info">
+                                <i class="fa-solid fa-certificate"></i>
+                                <span>SSL Certificate</span>
+                            </div>
+                            <p class="metric-value badge-green">TLS 1.3 Active</p>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-info">
+                                <i class="fa-solid fa-bug-slash"></i>
+                                <span>Malware Check</span>
+                            </div>
+                            <p class="metric-value badge-green">0 Threats Found</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SEO Card -->
+                <div class="dash-card seo-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-chart-line card-icon"></i>
+                        <h3>SEO & Quality Metrics</h3>
+                    </div>
+
+                    <div class="seo-score-box">
+                        <div class="seo-big-stat">
+                            <h3 id="seo">82</h3>
+                            <span class="seo-max">/100</span>
+                        </div>
+                        <div class="seo-stat-label">SEO Optimization Score</div>
+                    </div>
+
+                    <div class="metrics-list compact">
+                        <div class="metric-row">
+                            <div class="metric-info">
+                                <i class="fa-solid fa-tags"></i>
+                                <span>Meta Tags</span>
+                            </div>
+                            <p class="metric-value">Optimized</p>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-info">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                                <span>Mobile Friendly</span>
+                            </div>
+                            <p class="metric-value">100% Compatible</p>
+                        </div>
+
+                        <div class="metric-row">
+                            <div class="metric-info">
+                                <i class="fa-solid fa-bolt"></i>
+                                <span>Performance</span>
+                            </div>
+                            <p class="metric-value badge-green">Fast (&lt;1.2s)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. AI Verdict Card -->
+                <div class="dash-card verdict-card full-width">
+                    <div class="card-header">
+                        <div class="ai-badge-header">
+                            <i class="fa-solid fa-brain card-icon ai-pulse"></i>
+                            <h3>AI Threat Analysis Verdict</h3>
+                        </div>
+                        <span class="confidence-tag"><i class="fa-solid fa-check-double"></i> 99.4% Confidence</span>
+                    </div>
+
+                    <div class="verdict">
+                        <p id="verdict">
+                            This website appears trustworthy based on available security indicators.
+                        </p>
+                    </div>
+
+                    <div class="verdict-features">
+                        <div class="v-feat"><i class="fa-solid fa-circle-check"></i> Encrypted Connection</div>
+                        <div class="v-feat"><i class="fa-solid fa-circle-check"></i> Safe Phishing Profile</div>
+                        <div class="v-feat"><i class="fa-solid fa-circle-check"></i> Valid Domain Reputation</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Feature Highlights Section -->
+        <section class="features-section">
+            <div class="feat-card">
+                <div class="feat-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                <h4>Instant Deep Scan</h4>
+                <p>Analyzes domain headers, SSL encryption, and certificate parameters in milliseconds.</p>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon"><i class="fa-solid fa-robot"></i></div>
+                <h4>AI Risk Classification</h4>
+                <p>Neural engine detects suspicious phishing patterns and untrusted redirects.</p>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon"><i class="fa-solid fa-user-shield"></i></div>
+                <h4>Zero Data Logging</h4>
+                <p>Your URL inspect queries are completely private and never stored or shared.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fa-solid fa-shield-halved"></i> CheckMate
+            </div>
+            <p class="footer-text">Check Before You Click. Next-Gen Cybersecurity SaaS.</p>
+            <div class="footer-meta">
+                <span>© 2026 CheckMate Inc. All rights reserved.</span>
+                <span class="footer-divider">•</span>
+                <span>Keyboard Hint: Press <kbd>Enter</kbd> to analyze</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script File -->
+    <script src="script.js"></script>
+
+</body>
+</html>

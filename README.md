@@ -8,7 +8,7 @@ CheckMate is a modern Website Trust & Security Analyzer built using **HTML, CSS,
 
 > **Note:** This project is intended for educational and portfolio purposes. It performs client-side analysis and demonstrates how a website security dashboard works.
 
----
+--
 
 ## ✨ Features
 

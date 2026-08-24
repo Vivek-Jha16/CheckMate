@@ -2,7 +2,7 @@
 CheckMate is a modern Website Trust &amp; Security Analyzer built with HTML, CSS, and JavaScript. It analyzes URLs, generates a trust score, performs basic security and SEO checks, and provides an AI-powered website safety verdict through a clean and responsive dashboard.
 # 🛡️ CheckMate
 
-> **Check Before You Click.**
+> **Check Before You Click**
 
 CheckMate is a modern Website Trust & Security Analyzer built using **HTML, CSS, and JavaScript**. It helps users perform a quick analysis of any website by generating a Trust Score, checking basic security indicators, displaying SEO information, and providing an AI-style verdict through a clean and responsive dashboard.
 
